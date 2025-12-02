@@ -3,7 +3,24 @@ use std::fs::read_to_string;
 fn is_invalid(x: u64) -> bool {
     let str = x.to_string();
     let len = str.len();
-    str[..len/2] == str[len/2..]
+    let mut is_invalid = false;
+    for i in 1..=len/2 {
+        if len % i != 0 {
+            continue;
+        }
+        let mut tmp = true;
+        for j in 1..len/i {
+            if str[(j-1)*i..j*i] != str[j*i..(j+1)*i] {
+                tmp = false;
+                break;
+            }
+        }
+        if tmp {
+            is_invalid = true;
+            break;
+        }
+    }
+    is_invalid
 }
 
 pub fn day2(filename: &str) -> u64 {
