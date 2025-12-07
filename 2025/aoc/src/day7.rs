@@ -26,5 +26,23 @@ pub fn day7(filename: &str) -> u64 {
             }
         }
     }
-    split_count
+    let mut timelines: Vec<i64> = vec![0; grid[0].len()];
+    let mut timelines_next: Vec<i64> = vec![0; grid[0].len()];
+    for col_idx in 0..grid[0].len() {
+        if grid[grid.len() - 1][col_idx] == '|' {
+            timelines[col_idx] = 1;
+        }
+    }
+    for row_idx in (0..grid.len()-1).rev() {
+        for col_idx in 1..grid[row_idx].len() {
+            timelines_next[col_idx] = match grid[row_idx][col_idx] {
+                '.' => 0,
+                '|' | 'S' => timelines[col_idx],
+                '^' => timelines[col_idx - 1] + timelines[col_idx + 1],
+                _ => unreachable!()
+            }
+        }
+        std::mem::swap(&mut timelines, &mut timelines_next);
+    }
+    *timelines.iter().max().unwrap()as u64 + 1
 }
