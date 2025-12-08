@@ -35,23 +35,12 @@ pub fn day8(filename: &str) -> u64 {
     }
     distances.sort_by(|a, b| a.2.cmp(&b.2));
     let mut uf = UnionFind::new(points.len());
-    for p in 0..1000 {
-        let (i, j, _) = distances[p];
+    for p in 0..distances.len() {
+        let (i, j, d) = distances[p];
         uf.union(i, j);
-    }
-    let sizes = uf.sizes();
-    let mut maxes: [usize; 3] = [0; 3];
-    for size in sizes.values() {
-        if *size >= maxes[0] {
-            maxes[2] = maxes[1];
-            maxes[1] = maxes[0];
-            maxes[0] = *size;
-        } else if *size >= maxes[1] {
-            maxes[2] = maxes[1];
-            maxes[1] = *size;
-        } else if *size >= maxes[2] {
-            maxes[2] = *size;
+        if uf.all_connected() {
+            return points[i].x as u64 * points[j].x as u64;
         }
     }
-    (maxes[0] * maxes[1] * maxes[2]) as u64
+    panic!("No solution found");
 }
