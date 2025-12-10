@@ -10,6 +10,7 @@ mod day7;
 mod union_find;
 mod day8;
 mod day9;
+mod day10;
 
 fn main() {
     let filename = args().nth(1).unwrap();
@@ -21,6 +22,7 @@ fn main() {
     //let res = day6::day6(&filename);
     //let res = day7::day7(&filename);
     //let res = day8::day8(&filename);
-    let res = day9::day9(&filename);
+    //let res = day9::day9(&filename);
+    let res = day10::day10(&filename);
     print!("res {}", res);
 }
