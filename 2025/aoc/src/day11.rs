@@ -1,6 +1,26 @@
 use std::collections::{HashMap, VecDeque};
 use std::fs::read_to_string;
 
+fn count(from: &str, to: &str, graph: HashMap<&str, Vec<&str>>) -> u64 {
+    let mut ans = 0;
+    let mut q = VecDeque::new();
+    q.push_back(from);
+    while !q.is_empty() {
+        let next = q.pop_front().unwrap();
+        if next == to {
+            ans += 1;
+            continue;
+        }
+        if !graph.contains_key(next) {
+            continue;
+        }
+        for n in &graph[&next] {
+            q.push_back(n);
+        }
+    }
+    ans
+}
+
 pub fn day11(filename: &str) -> u64 {
     let mut graph: HashMap<&str, Vec<&str>> = HashMap::new();
     let binding = read_to_string(filename).unwrap();
@@ -12,18 +32,5 @@ pub fn day11(filename: &str) -> u64 {
         }
         graph.insert(node, neighbours);
     }
-    let mut ans = 0;
-    let mut q = VecDeque::new();
-    q.push_back("you");
-    while !q.is_empty() {
-        let next = q.pop_front().unwrap();
-        if next == "out" {
-            ans += 1;
-            continue;
-        }
-        for n in &graph[&next] {
-            q.push_back(n);
-        }
-    }
-    ans
+    count("you", "out", graph)
 }
