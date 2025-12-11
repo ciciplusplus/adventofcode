@@ -1,36 +1,40 @@
-use std::collections::{HashMap, VecDeque};
+use std::collections::{HashMap, HashSet, VecDeque};
 use std::fs::read_to_string;
 
-fn count(from: &str, to: &str, graph: HashMap<&str, Vec<&str>>) -> u64 {
-    let mut ans = 0;
-    let mut q = VecDeque::new();
-    q.push_back(from);
-    while !q.is_empty() {
-        let next = q.pop_front().unwrap();
-        if next == to {
-            ans += 1;
-            continue;
-        }
-        if !graph.contains_key(next) {
-            continue;
-        }
-        for n in &graph[&next] {
-            q.push_back(n);
-        }
+fn count<'a>(curr: &'a str, to: &str, graph: &HashMap<&str, Vec<&'a str>>, mem: &mut HashMap<&'a str, u64>) -> u64 {
+    if mem.contains_key(curr) {
+        return mem[curr];
     }
-    ans
+    let res = if curr == to {
+        1
+    } else {
+        let mut total = 0;
+        if let Some(x) = graph.get(curr) {
+            for y in x {
+                total += count(y, to, graph, mem);
+            }
+        }
+        total
+    };
+    mem.insert(curr, res);
+    res
 }
 
 pub fn day11(filename: &str) -> u64 {
-    let mut graph: HashMap<&str, Vec<&str>> = HashMap::new();
+    let mut reverse_graph: HashMap<&str, Vec<&str>> = HashMap::new();
     let binding = read_to_string(filename).unwrap();
     for str in binding.lines() {
         let (node, neighbours_str) = str.split_once(": ").unwrap();
-        let mut neighbours = Vec::new();
         for n in neighbours_str.split(' ') {
-            neighbours.push(n);
+            reverse_graph.entry(n).or_default().push(node);
         }
-        graph.insert(node, neighbours);
     }
-    count("you", "out", graph)
+    let mut res = 1;
+    let mut mem = HashMap::new();
+    res *= count("fft", "svr", &reverse_graph, &mut mem);
+    mem = HashMap::new();
+    res *= count("dac", "fft", &reverse_graph, &mut mem);
+    mem = HashMap::new();
+    res *= count("out", "dac", &reverse_graph, &mut mem);
+    res
 }
