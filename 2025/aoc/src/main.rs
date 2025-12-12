@@ -12,6 +12,7 @@ mod day8;
 mod day9;
 mod day10;
 mod day11;
+mod day12;
 
 fn main() {
     let filename = args().nth(1).unwrap();
@@ -25,6 +26,7 @@ fn main() {
     //let res = day8::day8(&filename);
     //let res = day9::day9(&filename);
     //let res = day10::day10(&filename);
-    let res = day11::day11(&filename);
+    //let res = day11::day11(&filename);
+    let res = day12::day12(&filename);
     print!("res {}", res);
 }
